@@ -1,0 +1,30 @@
+ghost:
+  container_name: ghost_blog
+  volumes:
+    - ./ghost/volumes/content:/var/lib/ghost
+    - ./ghost/volumes/config.js:/var/lib/ghost/config.js
+  build: ./ghost
+  ports:
+    - "80:2368" # makes it reachable by linked services but unreachable from host for security
+  environment: # this section can be commented to start in dev mode by default
+    - NODE_ENV=production
+    - WEB_DOMAIN=[ENTER_YOUR_DOMAIN].com
+    - DB_DATABASE=[ENTERY_YOUR_DB_NAME]
+    - DB_USER=[ENTER_YOUR_DB_USER]
+    - DB_PASSWORD=[ENTER_YOUR_DB_PASSWORD]
+  restart: always
+  links:
+    - mysql
+
+mysql:
+  container_name: blog_data
+  image: mysql:5.7.15
+  expose:
+    - "3306"
+  environment:
+    # beware of special characters in password that can be interpreted by shell
+    - MYSQL_ROOT_PASSWORD= [ENTER_YOUR_ROOT_PASSWORD]
+    - MYSQL_DATABASE=[ENTERY_YOUR_DB_NAME]
+    - MYSQL_USER= [ENTER_YOUR_DB_USER]
+    - MYSQL_PASSWORD= [ENTER_YOUR_DB_PASSWORD]
+  restart: always
